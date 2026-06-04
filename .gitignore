@@ -1,10 +1,8 @@
 # =========================
 # ENV
 # =========================
-.env
-.env.local
-.env.dev
-.env.produccion
+.env*
+!.env.example
 
 # =========================
 # COMPOSER
@@ -19,21 +17,26 @@ node_modules/
 # =========================
 # LOGS
 # =========================
+storage/*.log
 storage/logs/*
-*.log
+!storage/logs/.gitkeep
 
 # =========================
 # CACHE
 # =========================
 storage/cache/*
+!storage/cache/.gitkeep
+
+# =========================
+# TEMP
+# =========================
 storage/temp/*
+!storage/temp/.gitkeep
 
 # =========================
 # UPLOADS
 # =========================
 public/uploads/*
-
-# mantener carpeta vacía
 !public/uploads/.gitkeep
 
 # =========================
@@ -57,8 +60,3 @@ docker/mysql/data/
 # TESTS
 # =========================
 coverage/
-
-# =========================
-# COMPOSER LOCK 
-# =========================
-# composer.lock

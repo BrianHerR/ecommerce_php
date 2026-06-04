@@ -1,90 +1,245 @@
 # E-Commerce PHP MVP
 
-Un proyecto backend para comercio electrónico construido con una arquitectura Modelo-Vista-Controlador (MVC) personalizada desde cero en PHP. Diseñado para ser ligero, escalable y aplicando buenas prácticas modernas de desarrollo.
+Proyecto backend para comercio electrónico desarrollado desde cero en PHP utilizando una arquitectura MVC personalizada. El objetivo del proyecto es aplicar buenas prácticas modernas de desarrollo backend, diseño de software, testing automatizado y contenerización con Docker.
+
+---
 
 ## 🚀 Características Principales
 
-- **Arquitectura Limpia (MVC):** Separación clara entre Rutas, Controladores, Vistas y Lógica Core.
-- **Prácticas Modernas:** Tipado estricto (`declare(strict_types=1)`), carga automática PSR-4 y uso de namespaces.
-- **Gestión de Entorno:** Integración con `vlucas/phpdotenv` para cargar configuraciones sensibles de manera segura.
-- **Base de Datos:** Implementación de PDO con patrón Singleton para conexiones eficientes a MySQL.
-- **Testing y CI/CD:** Configurado con **PHPUnit** para pruebas automatizadas y **GitHub Actions** para validación e integración continua (CI).
-- **Docker-Ready:** Incluye archivo `docker-compose.yml` para desplegar rápidamente el motor de base de datos local (MySQL 8).
-- **Gestor Frontal (Front Controller):** Todas las solicitudes son centralizadas a través de `public/index.php`.
+* Arquitectura MVC personalizada.
+* Tipado estricto (`declare(strict_types=1)`).
+* Autoloading PSR-4 mediante Composer.
+* Uso de Namespaces.
+* Gestión de variables de entorno con `vlucas/phpdotenv`.
+* Conexión a MySQL mediante PDO.
+* Dockerización completa del entorno:
+
+  * Nginx
+  * PHP-FPM
+  * MySQL 8
+* Testing automatizado con PHPUnit.
+* Integración Continua (CI) mediante GitHub Actions.
+* Sistema preparado para logs, cache y archivos temporales mediante la carpeta `storage`.
+* Compatibilidad con entornos Linux y Docker.
+
+---
 
 ## 🛠️ Requisitos Previos
 
-Asegúrate de contar con las siguientes herramientas en tu entorno local:
+Para ejecutar el proyecto solo necesitas:
 
-- [PHP](https://www.php.net/downloads) (Versión recomendada >= 8.1)
-- [Composer](https://getcomposer.org/) para gestión de dependencias.
-- [Docker](https://www.docker.com/) y Docker Compose (para levantar la base de datos fácilmente).
+* Docker Desktop
+* Docker Compose
 
-## 📦 Instalación y Configuración
+Opcionalmente:
 
-Sigue estos pasos para levantar el entorno de desarrollo:
+* Git
+* Composer (para desarrollo local)
 
-1. **Clonar el repositorio:**
-   ```bash
-   git clone https://github.com/tu-usuario/ecommerce_php.git
-   cd ecommerce_php
-   ```
+---
 
-2. **Instalar dependencias:**
-   Descarga e instala las librerías necesarias con Composer (incluyendo PHPUnit para desarrollo):
-   ```bash
-   composer install
-   ```
+## 📦 Instalación
 
-3. **Configurar variables de entorno:**
-   Crea o modifica tu archivo de configuración basándote en un archivo `.env` o en el archivo requerido por el proyecto (ej. `env.dev`).
-   Asegúrate de proveer las credenciales correctas para MySQL (`DB_HOST`, `DB_DATABASE`, `DB_USERNAME`, `DB_PASSWORD`).
+### 1. Clonar el repositorio
 
-4. **Levantar la base de datos (Docker):**
-   Inicia el contenedor de MySQL incluido en el proyecto:
-   ```bash
-   docker-compose up -d
-   ```
+```bash
+git clone https://github.com/BrianHerR/ecommerce_php.git
+cd ecommerce_php
+```
 
-5. **Iniciar el servidor de desarrollo:**
-   Usa el servidor web integrado de PHP, apuntando la raíz del documento a la carpeta `public/`:
-   ```bash
-   php -S localhost:8000 -t public
-   ```
-   *La aplicación estará disponible en [http://localhost:8000](http://localhost:8000).*
+### 2. Instalar dependencias
+
+```bash
+composer install
+```
+
+### 3. Crear archivo de entorno
+
+Copiar el archivo de ejemplo:
+
+```bash
+cp .env.example .env
+```
+
+En Windows PowerShell:
+
+```powershell
+copy .env.example .env
+```
+
+Completar las variables necesarias:
+
+```env
+DB_DATABASE=
+DB_USERNAME=
+DB_PASSWORD=
+
+APP_KEY=
+```
+
+### 4. Levantar los contenedores
+
+```bash
+docker compose up -d --build
+```
+
+### 5. Acceder a la aplicación
+
+Abrir en el navegador:
+
+```text
+http://localhost:8080
+```
+
+---
+
+## 🐳 Arquitectura Docker
+
+El proyecto se ejecuta mediante tres servicios:
+
+```text
+Browser
+   │
+   ▼
+Nginx
+   │
+   ▼
+PHP-FPM
+   │
+   ▼
+MySQL
+```
+
+### Servicios
+
+| Servicio | Descripción         |
+| -------- | ------------------- |
+| nginx    | Servidor web        |
+| app      | Aplicación PHP-FPM  |
+| db       | Base de datos MySQL |
+
+---
 
 ## 🏗️ Estructura del Proyecto
 
 ```text
-├── .github/workflows/    # Pipeline de CI/CD (GitHub Actions)
-├── app/                  # Código fuente de la aplicación (Namespace: App\)
-│   ├── Controllers/      # Controladores (ej. HomeController.php)
-│   ├── Core/             # Lases fundamentales: Router, base de datos (PDO)
-│   ├── Routes/           # Registro de rutas (web.php)
-│   └── Views/            # Vistas y plantillas organizadas por sección
-├── config/               # Configuraciones (ej. database.php)
-├── public/               # Archivos públicos (CSS, JS) e index.php principal
-├── tests/                # Pruebas unitarias (PHPUnit)
-├── docker-compose.yml    # Definición de contenedor para MySQL
-├── phpunit.xml           # Configuración de pruebas
-└── composer.json         # Definición del proyecto y dependencias
+.
+├── .github/
+│   └── workflows/          # Pipelines de CI/CD con GitHub Actions
+│
+├── app/                    # Código fuente principal de la aplicación
+│   ├── Controllers/        # Controladores que manejan las peticiones HTTP
+│   ├── Core/               # Componentes fundamentales (Router, Database, Logger, etc.)
+│   ├── Routes/             # Definición y registro de rutas
+│   └── Views/              # Vistas y plantillas de la aplicación
+│
+├── config/                 # Archivos de configuración centralizados
+│
+├── docker/                 # Configuración de contenedores Docker
+│   ├── nginx/              # Configuración del servidor Nginx
+│   └── php/                # Dockerfile y configuración de PHP-FPM
+│
+├── public/                 # Punto de entrada público (Front Controller y assets)
+│
+├── storage/                # Archivos generados dinámicamente por la aplicación
+│   ├── logs/               # Logs de errores, eventos y depuración
+│   ├── cache/              # Archivos de caché para optimizar rendimiento
+│   └── temp/               # Archivos temporales generados en ejecución
+│
+├── tests/                  # Pruebas automatizadas con PHPUnit
+│
+├── .env.example            # Plantilla de variables de entorno
+├── .gitignore              # Archivos y carpetas ignorados por Git
+├── composer.json           # Dependencias y configuración de Composer
+├── composer.lock           # Versiones exactas de dependencias instaladas
+├── docker-compose.yml      # Orquestación de Nginx, PHP-FPM y MySQL
+├── phpunit.xml             # Configuración de PHPUnit
+└── README.md               # Documentación principal del proyecto
 ```
 
-## 🧪 Pruebas Automatizadas
+## 📁 Carpeta Storage
 
-El proyecto utiliza **PHPUnit** para garantizar el funcionamiento del código base.
+La carpeta `storage` almacena archivos generados por la aplicación.
 
-Para correr las pruebas localmente:
+```text
+storage/
+├── logs/
+├── cache/
+└── temp/
+```
+
+### logs
+
+Registra errores y eventos de la aplicación.
+
+Ejemplos:
+
+```text
+Usuario autenticado
+Error de conexión MySQL
+Error de procesamiento de pedido
+```
+
+### cache
+
+Permite almacenar datos temporales para mejorar el rendimiento.
+
+### temp
+
+Almacena archivos temporales generados durante la ejecución.
+
+---
+
+## 🧪 Testing
+
+Ejecutar pruebas:
+
 ```bash
 ./vendor/bin/phpunit
 ```
 
-Cada vez que realizas un *push* o abres un *pull request* en la rama `main`, **GitHub Actions** ejecutará automáticamente la suite de pruebas para verificar que los últimos cambios no hayan roto el sistema.
+o en Windows:
+
+```bash
+vendor\bin\phpunit
+```
+
+---
+
+## 🔄 Integración Continua
+
+Cada Push y Pull Request sobre la rama principal ejecuta automáticamente:
+
+* Instalación de dependencias.
+* Validación del proyecto.
+* Ejecución de pruebas PHPUnit.
+
+Mediante GitHub Actions.
+
+---
+
+## 📌 Roadmap
+
+Próximas funcionalidades:
+
+* Autenticación de usuarios.
+* Roles y permisos.
+* Gestión de productos.
+* Categorías.
+* Carrito de compras.
+* Checkout.
+* Gestión de órdenes.
+* Sistema de logs.
+* Cache de consultas.
+
+---
 
 ## 🤝 Contribuciones
 
-Siéntete libre de proponer mejoras para el *Router*, implementar un motor de *Vistas* (como Twig), o estructurar la capa de *Modelos* abriendo un Pull Request.
+Las contribuciones son bienvenidas mediante Pull Requests.
+
+---
 
 ## 📜 Licencia
 
-[MIT License](LICENSE)
+MIT License
